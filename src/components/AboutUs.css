@@ -1,0 +1,86 @@
+.about-container {
+  font-family: Arial, sans-serif;
+}
+
+/* 🔥 Top Section */
+.about-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px;
+  background: #f5f5f5;
+}
+
+.about-text {
+  width: 50%;
+}
+
+.about-text h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.about-text p {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.about-image img {
+  width: 250px;
+}
+
+/* 🔥 Features */
+.about-features {
+  display: flex;
+  justify-content: space-around;
+  padding: 50px;
+  background: #e8dede;
+  text-align: center;
+}
+
+.feature-card {
+  width: 200px;
+}
+
+.feature-card img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.feature-card h3 {
+  margin: 10px 0;
+  color: #333;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 🔥 Quote */
+.about-quote {
+  text-align: center;
+  padding: 60px;
+  background: #f5f5f5;
+}
+
+.about-quote h2 {
+  font-size: 60px;
+  color: #ccc;
+}
+
+.about-quote p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #555;
+  font-size: 18px;
+}
+
+.about-quote span {
+  display: block;
+  margin-top: 20px;
+  color: #e74c3c;
+  font-weight: bold;
+}

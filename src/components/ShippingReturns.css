@@ -1,0 +1,85 @@
+/* Background */
+.sr-container {
+  background: #eef2f7;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card */
+.sr-card {
+  background: white;
+  width: 90%;
+  max-width: 1100px;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.sr-header {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sr-header h1 {
+  margin: 10px 0 5px;
+}
+
+.update {
+  color: #888;
+  font-size: 14px;
+}
+
+/* Content Layout */
+.sr-content {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+/* Text */
+.sr-text {
+  flex: 1;
+  font-size: 15px;
+  color: #444;
+}
+
+.sr-text h3 {
+  margin-top: 20px;
+  color: #222;
+}
+
+.sr-text ul {
+  padding-left: 20px;
+}
+
+/* Image */
+.sr-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.sr-image img {
+  width: 100%;
+  max-width: 350px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sr-content {
+    flex-direction: column;
+  }
+
+  .sr-image img {
+    max-width: 250px;
+  }
+}
