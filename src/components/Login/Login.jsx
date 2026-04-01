@@ -76,11 +76,13 @@ const Login = ({ setUser }) => {
 
           setUser(values.email);
 
+          const pendingContactQuery = localStorage.getItem("pendingContactQuery");
+
           showAlert(
             "success",
             "Login Successful",
             "Welcome back to Lifestyle!",
-            () => navigate("/")
+            () => navigate(pendingContactQuery ? "/contact" : "/")
           );
           return;
         }

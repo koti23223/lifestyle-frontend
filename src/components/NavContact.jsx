@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import "./NavContact.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function NavContact() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,18 +16,7 @@ export default function NavContact() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const sendQuery = async (dataToSend) => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -35,7 +27,7 @@ export default function NavContact() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       const result = await response.text();
@@ -50,9 +42,11 @@ export default function NavContact() {
 
         setFormData({
           name: "",
-          email: "",
+          email: localStorage.getItem("userEmail") || "",
           message: "",
         });
+
+        localStorage.removeItem("pendingContactQuery");
       } else {
         Swal.fire({
           icon: "error",
@@ -71,6 +65,73 @@ export default function NavContact() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    const pendingQuery = localStorage.getItem("pendingContactQuery");
+
+    if (userEmail) {
+      setFormData((prev) => ({
+        ...prev,
+        email: userEmail,
+      }));
+    }
+
+    if (userEmail && pendingQuery) {
+      const parsedData = JSON.parse(pendingQuery);
+
+      const finalData = {
+        ...parsedData,
+        email: userEmail,
+      };
+
+      setFormData(finalData);
+      sendQuery(finalData);
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userEmail) {
+      localStorage.setItem("pendingContactQuery", JSON.stringify(formData));
+
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login first to send your query.",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#000",
+        cancelButtonColor: "#6c757d",
+      });
+
+      if (result.isConfirmed) {
+        navigate("/login");
+      }
+
+      return;
+    }
+
+    const finalData = {
+      ...formData,
+      email: userEmail,
+    };
+
+    sendQuery(finalData);
   };
 
   return (
@@ -135,6 +196,7 @@ export default function NavContact() {
               value={formData.email}
               onChange={handleChange}
               required
+              readOnly={!!localStorage.getItem("userEmail")}
             />
 
             <textarea
