@@ -22,8 +22,8 @@ export default function CartPage() {
 
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/cart/user/${userEmail}`
-      );
+  `${API_BASE_URL}/api/cart/user/${userEmail}`
+);
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
@@ -171,7 +171,7 @@ export default function CartPage() {
                   <div className="row align-items-center">
                     <div className="col-md-3 text-center mb-3 mb-md-0">
                       <img
-                        src={item.product.imageUrl}
+                        src={item?.product?.imageUrl}
                         alt={item.product.title}
                         className="img-fluid rounded-3"
                         loading="lazy"
@@ -188,8 +188,8 @@ export default function CartPage() {
                     </div>
 
                     <div className="col-md-5">
-                      <h5 className="mb-2">{item.product.title}</h5>
-                      <p className="mb-1 fw-bold fs-5">₹ {item.product.price}</p>
+                      <h5>{item?.product?.title}</h5>
+                      <p>₹ {item?.product?.price}</p>
                       <p className="text-muted mb-0">
                         Item Total: ₹ {itemSubtotal.toFixed(2)}
                       </p>

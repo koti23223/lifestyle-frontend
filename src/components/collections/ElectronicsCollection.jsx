@@ -17,7 +17,7 @@ export default function ElectronicsCollection() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/products`);
+const response = await axios.get(`${API_BASE_URL}/api/products`);
 
       const electronicsProducts = response.data.filter((item) => {
         const category = item.category?.toLowerCase();
@@ -161,8 +161,8 @@ export default function ElectronicsCollection() {
                   />
 
                   <div className="card-body text-center">
-                    <h6>{item.title}</h6>
-                    <p className="fw-bold">₹ {item.price}</p>
+                   <h6>{item?.title}</h6>
+<p>₹ {item?.price}</p>
 
                     <div className="d-flex gap-2">
                       <button

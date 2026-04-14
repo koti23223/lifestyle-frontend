@@ -12,15 +12,25 @@ export default function AccessoriesCollection() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!API_BASE_URL) {
+      console.error("API URL missing. Check .env file");
+      return;
+    }
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/products`);
+      console.log("API:", API_BASE_URL); // DEBUG
+
+      const response = await axios.get(
+        `${API_BASE_URL}/api/products`
+      );
+
+      console.log("DATA:", response.data); // DEBUG
 
       const accessoriesProducts = response.data.filter((item) => {
-        const category = item.category?.toLowerCase();
+        const category = item?.category?.toLowerCase();
 
         return (
           category === "watch" ||
@@ -39,11 +49,15 @@ export default function AccessoriesCollection() {
       setProducts(accessoriesProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
+      console.log("FULL ERROR:", error?.response);
 
       Swal.fire({
         icon: "error",
         title: "Failed",
-        text: "Unable to load products",
+        text:
+          error?.response?.data ||
+          error.message ||
+          "Unable to load products",
       });
     } finally {
       setLoading(false);
@@ -83,7 +97,7 @@ export default function AccessoriesCollection() {
     try {
       await axios.post(`${API_BASE_URL}/api/cart/add`, {
         email: userEmail,
-        productId: product.id,
+        productId: product?.id,
         quantity: 1,
       });
 
@@ -92,7 +106,7 @@ export default function AccessoriesCollection() {
       Swal.fire({
         icon: "success",
         title: "Added to Cart",
-        text: `${product.title} added successfully`,
+        text: `${product?.title} added successfully`,
         timer: 1500,
         showConfirmButton: false,
       });
@@ -100,7 +114,10 @@ export default function AccessoriesCollection() {
       Swal.fire({
         icon: "error",
         title: "Failed",
-        text: error.response?.data || "Unable to add product to cart",
+        text:
+          error?.response?.data ||
+          error.message ||
+          "Unable to add product to cart",
       });
     }
   };
@@ -114,7 +131,7 @@ export default function AccessoriesCollection() {
     try {
       await axios.post(`${API_BASE_URL}/api/wishlist/add`, {
         email: userEmail,
-        productId: product.id,
+        productId: product?.id,
       });
 
       window.dispatchEvent(new Event("wishlistUpdated"));
@@ -122,7 +139,7 @@ export default function AccessoriesCollection() {
       Swal.fire({
         icon: "success",
         title: "Added to Wishlist",
-        text: `${product.title} added successfully`,
+        text: `${product?.title} added successfully`,
         timer: 1500,
         showConfirmButton: false,
       });
@@ -130,7 +147,10 @@ export default function AccessoriesCollection() {
       Swal.fire({
         icon: "error",
         title: "Failed",
-        text: error.response?.data || "Unable to add product to wishlist",
+        text:
+          error?.response?.data ||
+          error.message ||
+          "Unable to add product to wishlist",
       });
     }
   };
@@ -147,12 +167,14 @@ export default function AccessoriesCollection() {
             <h5 className="text-center">No Products Available</h5>
           ) : (
             products.map((item) => (
-              <div className="col-md-3 mb-4" key={item.id}>
+              <div className="col-md-3 mb-4" key={item?.id}>
                 <div className="card h-100 shadow-sm">
+
+                  {/* IMAGE FIX */}
                   <img
-                    src={item.imageUrl}
+                    src={item?.imageUrl || "https://via.placeholder.com/350x350?text=No+Image"}
                     className="card-img-top"
-                    alt={item.title}
+                    alt={item?.title || "Product"}
                     loading="lazy"
                     style={{
                       height: "350px",
@@ -165,8 +187,8 @@ export default function AccessoriesCollection() {
                   />
 
                   <div className="card-body text-center">
-                    <h6>{item.title}</h6>
-                    <p className="fw-bold">₹ {item.price}</p>
+                    <h6>{item?.title}</h6>
+                    <p className="fw-bold">₹ {item?.price}</p>
 
                     <div className="d-flex gap-2">
                       <button
@@ -184,6 +206,7 @@ export default function AccessoriesCollection() {
                       </button>
                     </div>
                   </div>
+
                 </div>
               </div>
             ))

@@ -149,7 +149,7 @@ export default function WomensCollection() {
             products.map((item) => (
               <div className="col-md-3 mb-4" key={item.id}>
                 <div className="card h-100 shadow-sm">
-                  <img
+                  {/* <img
                     src={item.imageUrl}
                     className="card-img-top"
                     alt={item.title}
@@ -162,11 +162,18 @@ export default function WomensCollection() {
                       e.target.src =
                         "https://via.placeholder.com/400x400?text=No+Image";
                     }}
-                  />
+                  /> */}
+                  <img
+  src={item?.imageUrl || "https://via.placeholder.com/300"}
+  alt={item?.title}
+  onError={(e) => {
+    e.target.src = "https://via.placeholder.com/300";
+  }}
+/>
 
                   <div className="card-body text-center">
-                    <h6>{item.title}</h6>
-                    <p className="fw-bold">₹ {item.price}</p>
+                   <h6>{item?.title}</h6>
+<p>₹ {item?.price}</p>
 
                     <div className="d-flex gap-2">
                       <button

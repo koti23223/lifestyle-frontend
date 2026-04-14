@@ -24,15 +24,25 @@ export default function AdminProducts() {
       navigate("/");
       return;
     }
+
+    if (!API_BASE_URL) {
+      console.error("API URL missing");
+      return;
+    }
+
     loadProducts();
   }, [navigate]);
 
   const loadProducts = async () => {
     try {
       setLoading(true);
+
       const res = await axios.get(`${API_BASE_URL}/api/products`);
+      console.log("Products:", res.data); // DEBUG
+
       setProducts(res.data);
     } catch (error) {
+      console.error(error);
       Swal.fire("Error", "Failed to load products", "error");
     } finally {
       setLoading(false);
@@ -67,6 +77,7 @@ export default function AdminProducts() {
 
       loadProducts();
     } catch (error) {
+      console.error(error);
       Swal.fire("Error", "Failed to add product", "error");
     }
   };
@@ -75,30 +86,18 @@ export default function AdminProducts() {
     const { value: formValues } = await Swal.fire({
       title: "Edit Product",
       html: `
-        <input id="swal-title" class="swal2-input" placeholder="Title" value="${product.title || ""}">
-        <input id="swal-price" class="swal2-input" placeholder="Price" type="number" value="${product.price || ""}">
-        <input id="swal-category" class="swal2-input" placeholder="Category" value="${product.category || ""}">
-        <input id="swal-imageUrl" class="swal2-input" placeholder="Image URL" value="${product.imageUrl || ""}">
+        <input id="swal-title" class="swal2-input" value="${product?.title || ""}">
+        <input id="swal-price" class="swal2-input" type="number" value="${product?.price || ""}">
+        <input id="swal-category" class="swal2-input" value="${product?.category || ""}">
+        <input id="swal-imageUrl" class="swal2-input" value="${product?.imageUrl || ""}">
       `,
-      focusConfirm: false,
       showCancelButton: true,
-      confirmButtonText: "Update",
       preConfirm: () => {
-        const title = document.getElementById("swal-title").value.trim();
-        const price = document.getElementById("swal-price").value.trim();
-        const category = document.getElementById("swal-category").value.trim();
-        const imageUrl = document.getElementById("swal-imageUrl").value.trim();
-
-        if (!title || !price || !category || !imageUrl) {
-          Swal.showValidationMessage("All fields are required");
-          return false;
-        }
-
         return {
-          title,
-          price,
-          category,
-          imageUrl,
+          title: document.getElementById("swal-title").value,
+          price: document.getElementById("swal-price").value,
+          category: document.getElementById("swal-category").value,
+          imageUrl: document.getElementById("swal-imageUrl").value,
         };
       },
     });
@@ -111,46 +110,28 @@ export default function AdminProducts() {
         formValues
       );
 
-      Swal.fire({
-        icon: "success",
-        title: "Updated",
-        text: "Product Updated Successfully",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-
+      Swal.fire("Updated!", "", "success");
       loadProducts();
     } catch (error) {
       Swal.fire("Error", "Failed to update product", "error");
     }
   };
 
-  const deleteProduct = (id) => {
-    Swal.fire({
+  const deleteProduct = async (id) => {
+    const result = await Swal.fire({
       title: "Are you sure?",
-      text: "You want to delete this product",
-      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes Delete",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`${API_BASE_URL}/api/products/${id}`);
-
-          Swal.fire({
-            icon: "success",
-            title: "Deleted",
-            text: "Product Deleted",
-            timer: 1500,
-            showConfirmButton: false,
-          });
-
-          loadProducts();
-        } catch (error) {
-          Swal.fire("Error", "Failed to delete product", "error");
-        }
-      }
     });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await axios.delete(`${API_BASE_URL}/api/products/${id}`);
+      Swal.fire("Deleted!", "", "success");
+      loadProducts();
+    } catch (error) {
+      Swal.fire("Error", "Failed to delete product", "error");
+    }
   };
 
   return (
@@ -160,50 +141,22 @@ export default function AdminProducts() {
       <div className="container mt-4">
         <h2 className="text-center mb-4">Admin Product Management</h2>
 
+        {/* FORM */}
         <form onSubmit={handleSubmit} className="row mb-4">
           <div className="col-md-3">
-            <input
-              name="title"
-              className="form-control"
-              placeholder="Title"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
+            <input name="title" className="form-control" value={form.title} onChange={handleChange} required />
           </div>
 
           <div className="col-md-2">
-            <input
-              name="price"
-              type="number"
-              className="form-control"
-              placeholder="Price"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
+            <input name="price" type="number" className="form-control" value={form.price} onChange={handleChange} required />
           </div>
 
           <div className="col-md-3">
-            <input
-              name="category"
-              className="form-control"
-              placeholder="Category"
-              value={form.category}
-              onChange={handleChange}
-              required
-            />
+            <input name="category" className="form-control" value={form.category} onChange={handleChange} required />
           </div>
 
           <div className="col-md-3">
-            <input
-              name="imageUrl"
-              className="form-control"
-              placeholder="Paste Image URL"
-              value={form.imageUrl}
-              onChange={handleChange}
-              required
-            />
+            <input name="imageUrl" className="form-control" value={form.imageUrl} onChange={handleChange} required />
           </div>
 
           <div className="col-md-1">
@@ -211,6 +164,7 @@ export default function AdminProducts() {
           </div>
         </form>
 
+        {/* TABLE */}
         {loading ? (
           <h4>Loading...</h4>
         ) : (
@@ -228,37 +182,26 @@ export default function AdminProducts() {
 
             <tbody>
               {products.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.id}</td>
+                <tr key={p?.id}>
+                  <td>{p?.id}</td>
 
                   <td>
                     <img
-                      src={p.imageUrl}
-                      alt={p.title}
+                      src={p?.imageUrl || "https://via.placeholder.com/60"}
+                      alt={p?.title}
                       width="60"
                       height="60"
-                      style={{ objectFit: "cover" }}
+                      onError={(e) => (e.target.src = "https://via.placeholder.com/60")}
                     />
                   </td>
 
-                  <td>{p.title}</td>
-                  <td>{p.price}</td>
-                  <td>{p.category}</td>
+                  <td>{p?.title}</td>
+                  <td>{p?.price}</td>
+                  <td>{p?.category}</td>
 
                   <td>
-                    <button
-                      className="btn btn-warning me-2"
-                      onClick={() => editProduct(p)}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => deleteProduct(p.id)}
-                    >
-                      Delete
-                    </button>
+                    <button className="btn btn-warning me-2" onClick={() => editProduct(p)}>Edit</button>
+                    <button className="btn btn-danger" onClick={() => deleteProduct(p.id)}>Delete</button>
                   </td>
                 </tr>
               ))}
