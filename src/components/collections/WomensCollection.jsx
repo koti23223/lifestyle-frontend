@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-
+import "./CollectionCard.css";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function WomensCollection() {
@@ -142,57 +142,48 @@ export default function WomensCollection() {
       {loading ? (
         <h4 className="text-center">Loading Products...</h4>
       ) : (
-        <div className="row">
+        <div className="row align-items-stretch">
           {products.length === 0 ? (
             <h5 className="text-center">No Products Available</h5>
           ) : (
             products.map((item) => (
-              <div className="col-md-3 mb-4" key={item.id}>
-                <div className="card h-100 shadow-sm">
-                  {/* <img
-                    src={item.imageUrl}
-                    className="card-img-top"
-                    alt={item.title}
-                    loading="lazy"
-                    style={{
-                      height: "400px",
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/400x400?text=No+Image";
-                    }}
-                  /> */}
-                  <img
-  src={item?.imageUrl || "https://via.placeholder.com/300"}
-  alt={item?.title}
-  onError={(e) => {
-    e.target.src = "https://via.placeholder.com/300";
-  }}
-/>
+           <div className="col-md-3 mb-4 d-flex" key={item.id}>
+  <div className="card shadow-sm product-card w-100">
 
-                  <div className="card-body text-center">
-                   <h6>{item?.title}</h6>
-<p>₹ {item?.price}</p>
+    <img
+      src={item?.imageUrl || "https://via.placeholder.com/300"}
+      alt={item?.title}
+      className="card-img-top product-image"
+      onError={(e) => {
+        e.target.src = "https://via.placeholder.com/300";
+      }}
+    />
 
-                    <div className="d-flex gap-2">
-                      <button
-                        className="btn btn-outline-dark btn-sm w-50"
-                        onClick={() => handleWishlist(item)}
-                      >
-                        Wishlist
-                      </button>
+    <div className="card-body product-body">
+      <div>
+        <h6>{item?.title}</h6>
+        <p>₹ {item?.price}</p>
+      </div>
 
-                      <button
-                        className="btn btn-outline-dark btn-sm w-50"
-                        onClick={() => handleAddToCart(item)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div className="product-buttons">
+        <button
+          className="btn btn-outline-dark btn-sm w-50"
+          onClick={() => handleWishlist(item)}
+        >
+          Wishlist
+        </button>
+
+        <button
+          className="btn btn-outline-dark btn-sm w-50"
+          onClick={() => handleAddToCart(item)}
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
             ))
           )}
         </div>

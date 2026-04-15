@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import "./MensCollection.css"; // 👈 import CSS
+import "./CollectionCard.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
