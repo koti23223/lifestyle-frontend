@@ -134,32 +134,32 @@ export default function MensCollection() {
             products.map((item) => (
               <div className="col-md-3 mb-4" key={item.id}>
                 <div className="card h-100 shadow-sm">
-                  {/* <img
-                    src={item.imageUrl}
+
+                  {/* Fixed Image */}
+                  <img
+                    src={item?.imageUrl || "https://via.placeholder.com/300"}
+                    alt={item?.title}
                     className="card-img-top"
-                    alt={item.title}
-                    loading="lazy"
                     style={{
-                      height: "350px",
+                      height: "300px",
+                      width: "100%",
                       objectFit: "cover",
                     }}
                     onError={(e) => {
                       e.target.src =
-                        "https://dummyimage.com/400x400/cccccc/000000&text=No+Image";
+                        "https://via.placeholder.com/300";
                     }}
-                  /> */}
-<img
-  src={item?.imageUrl || "https://via.placeholder.com/300"}
-  alt={item?.title}
-  onError={(e) => {
-    e.target.src = "https://via.placeholder.com/300";
-  }}
-/>
-                  <div className="card-body text-center">
-                   <h6>{item?.title}</h6>
-<p>₹ {item?.price}</p>
+                  />
 
-                    <div className="d-flex gap-2">
+                  {/* Fixed Card Layout */}
+                  <div className="card-body d-flex flex-column justify-content-between text-center">
+                    
+                    <div>
+                      <h6>{item?.title}</h6>
+                      <p>₹ {item?.price}</p>
+                    </div>
+
+                    <div className="mt-auto d-flex gap-2">
                       <button
                         className="btn btn-outline-dark btn-sm w-50"
                         onClick={() => handleWishlist(item)}
@@ -174,6 +174,7 @@ export default function MensCollection() {
                         Add to Cart
                       </button>
                     </div>
+
                   </div>
                 </div>
               </div>
